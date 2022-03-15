@@ -1,0 +1,47 @@
+server:
+  port: ${port:11945}
+
+discovery:
+  self: ${self:gaw}
+  endpoints:
+    gaw:
+      url: http://127.0.0.1:11945
+      config:
+        requestFtpDatasource: gaw-request
+        responseFtpDatasource: gaw-response
+    zw:
+      url: http://127.0.0.1:12945
+      config:
+        requestFtpDatasource: zw-request
+        responseFtpDatasource: zw-response
+
+ftp:
+  datasource:
+    gaw-request:
+      host: localhost
+      port: 21
+      encoding: gbk
+      username: linewell
+      password: linewell
+      ftpDir: fttp/gaw-request
+    gaw-response:
+      host: localhost
+      port: 21
+      encoding: gbk
+      username: linewell
+      password: linewell
+      ftpDir: fttp/gaw-response
+    zw-request:
+      host: localhost
+      port: 21
+      encoding: gbk
+      username: linewell
+      password: linewell
+      ftpDir: fttp/zw-request
+    zw-response:
+      host: localhost
+      port: 21
+      encoding: gbk
+      username: linewell
+      password: linewell
+      ftpDir: fttp/zw-response
