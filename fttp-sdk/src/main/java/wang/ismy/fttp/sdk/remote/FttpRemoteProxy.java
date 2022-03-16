@@ -26,11 +26,38 @@ public class FttpRemoteProxy {
     private FttpEndpoint sourceEndpoint;
     private FttpEndpoint targetEndpoint;
 
+    /**
+     * 执行一个 GET 请求
+     * @param url
+     * @return 文本数据
+     */
     public String get(String url) {
         FttpRequest request = packetGetRequest(url);
         FttpResponse response = request(request);
         assertResponse(response);
         return new String(Base64.getDecoder().decode(response.getInvokeBody()));
+    }
+
+    /**
+     * 执行一个 GET 请求
+     * @param url
+     * @return 二进制数据
+     */
+    public byte[] getRaw(String url) {
+        FttpRequest request = packetGetRequest(url);
+        FttpResponse response = request(request);
+        assertResponse(response);
+        return Base64.getDecoder().decode(response.getInvokeBody());
+    }
+
+    /**
+     * 执行一个不等待返回的 GET 请求
+     * @param url
+     */
+    public void dropGet(String url) {
+        FttpRequest request = packetGetRequest(url);
+        FttpResponse response = drop(request);
+        assertResponse(response);
     }
 
     /**
@@ -51,11 +78,8 @@ public class FttpRemoteProxy {
         return new RestTemplate().postForObject(sourceEndpoint.getUrl() + "/invoke/request", request, FttpResponse.class);
     }
 
-    public byte[] getRaw(String url) {
-        FttpRequest request = packetGetRequest(url);
-        FttpResponse response = request(request);
-        assertResponse(response);
-        return Base64.getDecoder().decode(response.getInvokeBody());
+    private FttpResponse drop(FttpRequest request) {
+        return new RestTemplate().postForObject(sourceEndpoint.getUrl() + "/invoke/drop", request, FttpResponse.class);
     }
 
     private void assertResponse(FttpResponse response) {

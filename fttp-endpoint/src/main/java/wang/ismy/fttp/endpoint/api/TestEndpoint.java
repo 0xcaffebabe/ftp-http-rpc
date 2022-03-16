@@ -1,6 +1,8 @@
 package wang.ismy.fttp.endpoint.api;
 
 import cn.hutool.core.io.IoUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,11 +19,18 @@ import java.io.IOException;
  */
 @RestController
 @RequestMapping("test")
+@Slf4j
 public class TestEndpoint {
 
     @PostMapping("upload")
     public String upload(HttpServletRequest request) throws IOException {
         byte[] bytes = IoUtil.readBytes(request.getInputStream());
         return new String(bytes);
+    }
+
+    @GetMapping("drop")
+    public String drop() {
+        log.info("接收到一个 drop");
+        return System.currentTimeMillis() + "";
     }
 }

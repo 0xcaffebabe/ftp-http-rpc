@@ -56,4 +56,10 @@ class FttpRemoteProxyTest {
         System.out.println(response);
     }
 
+    @Test
+    public void testDrop(){
+        FttpRemoteProxy proxy = new FttpRemoteProxy(source(), target());
+        proxy.dropGet("http://127.0.0.1:11945/test/drop");
+    }
+
 }
