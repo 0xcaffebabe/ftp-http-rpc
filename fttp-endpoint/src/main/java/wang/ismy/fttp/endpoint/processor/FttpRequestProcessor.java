@@ -60,6 +60,7 @@ public class FttpRequestProcessor {
                     byte[] requestBodyArray = Base64.getDecoder().decode(request.getInvokeBody());
                     post.setEntity(new ByteArrayEntity(requestBodyArray));
                 }
+                httpRequest = post;
                 break;
             default:
                 throw new IllegalArgumentException("未知的请求类型 " + method);

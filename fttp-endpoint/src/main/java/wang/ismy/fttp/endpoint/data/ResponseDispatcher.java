@@ -34,6 +34,10 @@ public class ResponseDispatcher {
         }
         try {
             Exchanger<FttpResponse> exchanger = requestExchangeMap.get(response.getRequestId());
+            // 没有找到交换器 一般是调用方没有 await 不需要返回结果
+            if (exchanger == null) {
+                return;
+            }
             // 最多等待5秒 超过5秒还没人交换 丢弃
             exchanger.exchange(response, 5, TimeUnit.SECONDS);
         }finally {
