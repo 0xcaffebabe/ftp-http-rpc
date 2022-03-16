@@ -20,6 +20,7 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>1.8</java.version>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencies>
         <dependency>
@@ -39,5 +40,12 @@
             <version>4.5.13</version>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>central</id>
+            <url>http://maven.linewellcloud.com/repository/wd-sjjs-3rd/</url>
+        </repository>
+    </distributionManagement>
 
 </project>
