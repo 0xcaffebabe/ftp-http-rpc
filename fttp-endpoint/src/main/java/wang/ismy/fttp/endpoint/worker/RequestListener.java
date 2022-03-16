@@ -39,9 +39,22 @@ public class RequestListener {
             ThreadPoolUtils.SHORT_LIFE_POOL.execute(() -> {
                 byte[] download = ftpTransferService.download(requestFtpDatasource, file);
                 FttpRequest request = JSONObject.parseObject(download, FttpRequest.class);
-                FttpResponse response = requestProcessor.process(request);
+                FttpResponse response;
+                try {
+                    response = requestProcessor.process(request);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                    response = FttpResponse.builder()
+                            .requestId(request.getRequestId())
+                            .sourceEndpoint(request.getSourceEndpoint())
+                            .targetEndpoint(request.getTargetEndpoint())
+                            .code(-1)
+                            .message(e.getMessage())
+                            .build();
+                }
                 ftpTransferService.deleteFile(requestFtpDatasource, file);
-                ftpTransferService.upload(request.getSourceEndpoint().getConfig().getResponseFtpDatasource(), JSONObject.toJSONString(response));
+                String responseFtpDatasource = LocalDiscovery.lookup(request.getSourceEndpoint().getId()).getConfig().getResponseFtpDatasource();
+                ftpTransferService.upload(responseFtpDatasource, JSONObject.toJSONString(response));
                 log.info("请求信息交换 {}", file);
             });
         }

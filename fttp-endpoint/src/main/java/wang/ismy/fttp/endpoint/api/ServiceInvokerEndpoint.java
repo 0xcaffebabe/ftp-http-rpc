@@ -3,6 +3,7 @@ package wang.ismy.fttp.endpoint.api;
 import cn.hutool.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import wang.ismy.fttp.endpoint.discovery.LocalDiscovery;
@@ -33,12 +34,24 @@ public class ServiceInvokerEndpoint {
     private ResponseDispatcher responseDispatcher;
 
     @GetMapping("get")
-    public FttpResponse invoke(@RequestParam("url") String url, @RequestParam("targetEndpoint") String targetEndpoint) throws InterruptedException {
+    public FttpResponse get(@RequestParam("url") String url, @RequestParam("targetEndpoint") String targetEndpoint) throws InterruptedException {
         FttpEndpoint endpoint = LocalDiscovery.lookup(targetEndpoint);
         FttpRequest request = packetSimpleGetRequest(url, endpoint);
         ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
                 JSONUtil.toJsonStr(request));
         return responseDispatcher.await(request.getRequestId());
+    }
+
+    @PostMapping("request")
+    public FttpResponse request(@RequestBody FttpRequest fttpRequest) throws InterruptedException {
+        if (!StringUtils.hasLength(fttpRequest.getRequestId())) {
+            fttpRequest.setRequestId(UUID.randomUUID().toString());
+        }
+
+        FttpEndpoint endpoint = LocalDiscovery.lookup(fttpRequest.getTargetEndpoint().getId());
+        ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
+                JSONUtil.toJsonStr(fttpRequest));
+        return responseDispatcher.await(fttpRequest.getRequestId());
     }
 
     private FttpRequest packetSimpleGetRequest(String url, FttpEndpoint target) {
