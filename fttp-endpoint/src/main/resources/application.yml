@@ -15,6 +15,12 @@ discovery:
         requestFtpDatasource: zw-request
         responseFtpDatasource: zw-response
 
+listener:
+  request:
+    cron: "0/5 * * * * ?"
+  response:
+    cron: "0/5 * * * * ?"
+
 ftp:
   datasource:
     gaw-request:

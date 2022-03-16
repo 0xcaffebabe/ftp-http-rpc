@@ -30,7 +30,7 @@ public class ResponseListener {
     @Autowired
     private ResponseDispatcher responseDispatcher;
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(cron = "${listener.response.cron}")
     public void run() {
         String responseFtpDatasource = LocalDiscovery.self().getConfig().getResponseFtpDatasource();
         List<String> fileList = ftpTransferService.listAll(responseFtpDatasource);

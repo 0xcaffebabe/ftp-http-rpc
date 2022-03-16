@@ -31,7 +31,7 @@ public class RequestListener {
     @Autowired
     private FttpRequestProcessor requestProcessor;
 
-    @Scheduled(fixedDelay = 5000)
+    @Scheduled(cron = "${listener.request.cron}")
     public void run() {
         String requestFtpDatasource = LocalDiscovery.self().getConfig().getRequestFtpDatasource();
         List<String> fileList = ftpTransferService.listAll(requestFtpDatasource);
