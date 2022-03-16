@@ -45,7 +45,7 @@ public class ResponseListener {
                 try {
                     responseDispatcher.dispatch(response);
                 } catch (InterruptedException | TimeoutException e) {
-                    e.printStackTrace();
+                    log.error("响应调度被打断或者等待超时", e);
                 }
                 ftpTransferService.deleteFile(responseFtpDatasource, file);
                 log.info("响应信息交换 {}", file);

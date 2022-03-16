@@ -47,7 +47,7 @@ public class RequestListener {
                 try {
                     response = requestProcessor.process(request);
                 }catch (Exception e) {
-                    e.printStackTrace();
+                    log.error("请求处理出现异常", e);
                     response = FttpResponse.builder()
                             .requestId(request.getRequestId())
                             .sourceEndpoint(request.getSourceEndpoint())
