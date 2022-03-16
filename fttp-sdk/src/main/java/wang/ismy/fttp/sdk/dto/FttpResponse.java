@@ -1,6 +1,9 @@
 package wang.ismy.fttp.sdk.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.LinkedHashMap;
 
@@ -11,6 +14,9 @@ import java.util.LinkedHashMap;
  * @since: 2022年03月15日 14:24
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class FttpResponse {
     /**
      * 唯一请求ID 用来匹配跨网请求响应封包

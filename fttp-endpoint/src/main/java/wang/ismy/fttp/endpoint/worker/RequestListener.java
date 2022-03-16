@@ -39,7 +39,7 @@ public class RequestListener {
             ThreadPoolUtils.SHORT_LIFE_POOL.execute(() -> {
                 byte[] download = ftpTransferService.download(requestFtpDatasource, file);
                 FttpRequest request = JSONObject.parseObject(download, FttpRequest.class);
-                FttpResponse response = requestProcessor.simpleGetProcess(request);
+                FttpResponse response = requestProcessor.process(request);
                 ftpTransferService.deleteFile(requestFtpDatasource, file);
                 ftpTransferService.upload(request.getSourceEndpoint().getConfig().getResponseFtpDatasource(), JSONObject.toJSONString(response));
                 log.info("请求信息交换 {}", file);
