@@ -33,6 +33,9 @@ public class ServiceInvokerEndpoint {
     @Autowired
     private ResponseDispatcher responseDispatcher;
 
+    @Autowired
+    private LocalDiscovery localDiscovery;
+
     /**
      * 发起一个简单的 get 请求
      * @param url 服务提供方url
@@ -42,7 +45,7 @@ public class ServiceInvokerEndpoint {
      */
     @GetMapping("get")
     public FttpResponse get(@RequestParam("url") String url, @RequestParam("targetEndpoint") String targetEndpoint) throws InterruptedException {
-        FttpEndpoint endpoint = LocalDiscovery.lookup(targetEndpoint);
+        FttpEndpoint endpoint = localDiscovery.lookup(targetEndpoint);
         FttpRequest request = packetSimpleGetRequest(url, endpoint);
         ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
                 JSONUtil.toJsonStr(request));
@@ -61,7 +64,7 @@ public class ServiceInvokerEndpoint {
             fttpRequest.setRequestId(UUID.randomUUID().toString());
         }
 
-        FttpEndpoint endpoint = LocalDiscovery.lookup(fttpRequest.getTargetEndpoint().getId());
+        FttpEndpoint endpoint = localDiscovery.lookup(fttpRequest.getTargetEndpoint().getId());
         ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
                 JSONUtil.toJsonStr(fttpRequest));
         return responseDispatcher.await(fttpRequest.getRequestId());
@@ -78,7 +81,7 @@ public class ServiceInvokerEndpoint {
         // 置空掉请求ID
         fttpRequest.setRequestId("");
 
-        FttpEndpoint endpoint = LocalDiscovery.lookup(fttpRequest.getTargetEndpoint().getId());
+        FttpEndpoint endpoint = localDiscovery.lookup(fttpRequest.getTargetEndpoint().getId());
         ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
                 JSONUtil.toJsonStr(fttpRequest));
         return FttpResponse.emptyResponse();
@@ -89,8 +92,7 @@ public class ServiceInvokerEndpoint {
         request.setRequestId(UUID.randomUUID().toString());
         request.setInvokeUrl(url);
         request.setInvokeMethod("GET");
-        // todo
-        request.setSourceEndpoint(LocalDiscovery.self());
+        request.setSourceEndpoint(localDiscovery.self());
         request.setTargetEndpoint(target);
         return request;
     }

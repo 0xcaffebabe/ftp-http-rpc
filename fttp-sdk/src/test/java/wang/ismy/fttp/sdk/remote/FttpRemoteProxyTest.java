@@ -1,9 +1,6 @@
 package wang.ismy.fttp.sdk.remote;
 
 import cn.hutool.core.io.IoUtil;
-import org.apache.http.HttpEntity;
-import org.apache.http.entity.mime.MultipartEntityBuilder;
-import org.apache.http.entity.mime.content.FileBody;
 import org.junit.jupiter.api.Test;
 import wang.ismy.fttp.sdk.dto.FttpEndpoint;
 

@@ -31,9 +31,12 @@ public class RequestListener {
     @Autowired
     private FttpRequestProcessor requestProcessor;
 
+    @Autowired
+    private LocalDiscovery localDiscovery;
+
     @Scheduled(cron = "${listener.request.cron}")
     public void run() {
-        String requestFtpDatasource = LocalDiscovery.self().getConfig().getRequestFtpDatasource();
+        String requestFtpDatasource = localDiscovery.self().getConfig().getRequestFtpDatasource();
         List<String> fileList = ftpTransferService.listAll(requestFtpDatasource);
         for (String file : fileList) {
             // 下载并请求 然后将结果回送到对应的FTP
@@ -54,7 +57,7 @@ public class RequestListener {
                             .build();
                 }
                 ftpTransferService.deleteFile(requestFtpDatasource, file);
-                String responseFtpDatasource = LocalDiscovery.lookup(request.getSourceEndpoint().getId()).getConfig().getResponseFtpDatasource();
+                String responseFtpDatasource = localDiscovery.lookup(request.getSourceEndpoint().getId()).getConfig().getResponseFtpDatasource();
                 if (StringUtils.hasLength(request.getRequestId())) {
                     ftpTransferService.upload(responseFtpDatasource, JSONObject.toJSONString(response));
                     log.info("请求信息交换 {}", file);

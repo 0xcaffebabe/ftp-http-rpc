@@ -30,9 +30,12 @@ public class ResponseListener {
     @Autowired
     private ResponseDispatcher responseDispatcher;
 
+    @Autowired
+    private LocalDiscovery localDiscovery;
+
     @Scheduled(cron = "${listener.response.cron}")
     public void run() {
-        String responseFtpDatasource = LocalDiscovery.self().getConfig().getResponseFtpDatasource();
+        String responseFtpDatasource = localDiscovery.self().getConfig().getResponseFtpDatasource();
         List<String> fileList = ftpTransferService.listAll(responseFtpDatasource);
         for (String file : fileList) {
             // 下载并分发
