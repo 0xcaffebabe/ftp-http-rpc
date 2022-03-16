@@ -33,6 +33,13 @@ public class ServiceInvokerEndpoint {
     @Autowired
     private ResponseDispatcher responseDispatcher;
 
+    /**
+     * 发起一个简单的 get 请求
+     * @param url 服务提供方url
+     * @param targetEndpoint 目的端点id
+     * @return
+     * @throws InterruptedException
+     */
     @GetMapping("get")
     public FttpResponse get(@RequestParam("url") String url, @RequestParam("targetEndpoint") String targetEndpoint) throws InterruptedException {
         FttpEndpoint endpoint = LocalDiscovery.lookup(targetEndpoint);
@@ -42,6 +49,12 @@ public class ServiceInvokerEndpoint {
         return responseDispatcher.await(request.getRequestId());
     }
 
+    /**
+     * 发起一个通用请求
+     * @param fttpRequest 请求实体
+     * @return
+     * @throws InterruptedException
+     */
     @PostMapping("request")
     public FttpResponse request(@RequestBody FttpRequest fttpRequest) throws InterruptedException {
         if (!StringUtils.hasLength(fttpRequest.getRequestId())) {
@@ -52,6 +65,23 @@ public class ServiceInvokerEndpoint {
         ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
                 JSONUtil.toJsonStr(fttpRequest));
         return responseDispatcher.await(fttpRequest.getRequestId());
+    }
+
+    /**
+     * 发起一个不等待响应的请求
+     * @param fttpRequest
+     * @return
+     * @throws InterruptedException
+     */
+    @PostMapping("drop")
+    public FttpResponse drop(@RequestBody FttpRequest fttpRequest) throws InterruptedException {
+        // 置空掉请求ID
+        fttpRequest.setRequestId("");
+
+        FttpEndpoint endpoint = LocalDiscovery.lookup(fttpRequest.getTargetEndpoint().getId());
+        ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
+                JSONUtil.toJsonStr(fttpRequest));
+        return FttpResponse.emptyResponse();
     }
 
     private FttpRequest packetSimpleGetRequest(String url, FttpEndpoint target) {

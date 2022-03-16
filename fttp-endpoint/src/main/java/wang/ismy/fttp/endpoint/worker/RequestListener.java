@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import wang.ismy.fttp.endpoint.discovery.LocalDiscovery;
 import wang.ismy.fttp.endpoint.ftp.FtpTransferService;
 import wang.ismy.fttp.endpoint.processor.FttpRequestProcessor;
@@ -54,8 +55,12 @@ public class RequestListener {
                 }
                 ftpTransferService.deleteFile(requestFtpDatasource, file);
                 String responseFtpDatasource = LocalDiscovery.lookup(request.getSourceEndpoint().getId()).getConfig().getResponseFtpDatasource();
-                ftpTransferService.upload(responseFtpDatasource, JSONObject.toJSONString(response));
-                log.info("请求信息交换 {}", file);
+                if (StringUtils.hasLength(request.getRequestId())) {
+                    ftpTransferService.upload(responseFtpDatasource, JSONObject.toJSONString(response));
+                    log.info("请求信息交换 {}", file);
+                }else {
+                    log.info("不进行请求信息交换 {}", file);
+                }
             });
         }
     }

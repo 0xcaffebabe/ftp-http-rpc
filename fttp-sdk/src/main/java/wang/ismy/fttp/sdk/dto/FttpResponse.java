@@ -47,4 +47,10 @@ public class FttpResponse {
     private String invokeBody;
 
 
+    public static FttpResponse emptyResponse() {
+        FttpResponse response = new FttpResponse();
+        response.setCode(0);
+        response.setMessage("success");
+        return response;
+    }
 }
