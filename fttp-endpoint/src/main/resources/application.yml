@@ -3,6 +3,12 @@ server:
 
 discovery:
   self: ${self:gaw}
+  # 自身广播推送设置
+  push:
+    enable: true
+    interval: 30000
+  # 拉取服务间隔
+  pollInterval: 10000
   endpoints:
     gaw:
       url: http://127.0.0.1:11945
