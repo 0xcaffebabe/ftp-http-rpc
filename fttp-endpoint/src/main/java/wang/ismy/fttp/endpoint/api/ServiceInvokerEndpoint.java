@@ -10,6 +10,7 @@ import wang.ismy.fttp.endpoint.discovery.LocalDiscovery;
 import wang.ismy.fttp.endpoint.WithoutSSLFactory;
 import wang.ismy.fttp.endpoint.data.ResponseDispatcher;
 import wang.ismy.fttp.endpoint.ftp.FtpTransferService;
+import wang.ismy.fttp.endpoint.service.FttpRequestService;
 import wang.ismy.fttp.sdk.dto.FttpEndpoint;
 import wang.ismy.fttp.sdk.dto.FttpRequest;
 import wang.ismy.fttp.sdk.dto.FttpResponse;
@@ -36,6 +37,9 @@ public class ServiceInvokerEndpoint {
     @Autowired
     private LocalDiscovery localDiscovery;
 
+    @Autowired
+    private FttpRequestService fttpRequestService;
+
     /**
      * 发起一个简单的 get 请求
      * @param url 服务提供方url
@@ -47,9 +51,8 @@ public class ServiceInvokerEndpoint {
     public FttpResponse get(@RequestParam("url") String url, @RequestParam("targetEndpoint") String targetEndpoint) throws InterruptedException {
         FttpEndpoint endpoint = localDiscovery.lookup(targetEndpoint);
         FttpRequest request = packetSimpleGetRequest(url, endpoint);
-        ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
-                JSONUtil.toJsonStr(request));
-        return responseDispatcher.await(request.getRequestId());
+
+        return fttpRequestService.execute(request, endpoint);
     }
 
     /**
@@ -65,9 +68,7 @@ public class ServiceInvokerEndpoint {
         }
 
         FttpEndpoint endpoint = localDiscovery.lookup(fttpRequest.getTargetEndpoint().getId());
-        ftpTransferService.upload(endpoint.getConfig().getRequestFtpDatasource(),
-                JSONUtil.toJsonStr(fttpRequest));
-        return responseDispatcher.await(fttpRequest.getRequestId());
+        return fttpRequestService.execute(fttpRequest, endpoint);
     }
 
     /**

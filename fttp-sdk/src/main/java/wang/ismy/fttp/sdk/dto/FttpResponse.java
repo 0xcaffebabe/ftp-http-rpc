@@ -31,9 +31,20 @@ public class FttpResponse {
      */
     private FttpEndpoint targetEndpoint;
 
+    /**
+     * 调用结果消息
+     */
     private String message;
 
+    /**
+     * 调用结果代码
+     */
     private Integer code;
+
+    /**
+     * 调用耗时
+     */
+    private Long cost;
 
     private String invokeUrl;
 

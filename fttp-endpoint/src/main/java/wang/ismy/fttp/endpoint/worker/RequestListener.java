@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import wang.ismy.fttp.endpoint.discovery.LocalDiscovery;
 import wang.ismy.fttp.endpoint.ftp.FtpTransferService;
-import wang.ismy.fttp.endpoint.processor.FttpRequestProcessor;
+import wang.ismy.fttp.endpoint.service.FttpRequestProcessor;
 import wang.ismy.fttp.endpoint.util.ThreadPoolUtils;
 import wang.ismy.fttp.sdk.dto.FttpRequest;
 import wang.ismy.fttp.sdk.dto.FttpResponse;
